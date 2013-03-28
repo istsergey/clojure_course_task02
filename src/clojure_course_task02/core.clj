@@ -6,8 +6,17 @@
         (.getName file)
         )
 
-;Пробовал распаралеливать поиск по каталогам, но это решение показалось быстрее
+(defn getFileName[files fileName]
+                 (pmap getName (filter #(.isFile %) (filter #(re-find (re-pattern fileName)
+                         (getName %))  files)))
+                 )
+
 (defn find-files [file-name path]
+  (flatten (pmap  #(getFileName % file-name) (partition-all 100 (file-seq (clojure.java.io/file path)))))
+  )
+
+; Еще один варинт решения
+(defn find-filesVer2 [file-name path]
   (pmap getName (filter #(.isFile %) (filter #(re-find (re-pattern file-name)
           (getName %)) (file-seq (clojure.java.io/file path)))))
   )
