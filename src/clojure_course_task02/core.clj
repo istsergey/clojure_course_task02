@@ -6,11 +6,11 @@
         (.getName file)
         )
 
+;Пробовал распаралеливать поиск по каталогам, но это решение показалось быстрее
 (defn find-files [file-name path]
-  (map getName (filter #(.isFile %) (filter #(re-find (re-pattern file-name)
+  (pmap getName (filter #(.isFile %) (filter #(re-find (re-pattern file-name)
           (getName %)) (file-seq (clojure.java.io/file path)))))
   )
-
 
 (defn usage []
   (println "Usage: $ run.sh file_name path"))
